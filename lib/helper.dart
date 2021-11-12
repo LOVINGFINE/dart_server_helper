@@ -97,24 +97,15 @@ class DartServerHelper {
     return target;
   }
 
-  Future<dynamic> getBody<T>(String key) async {
+  Future<Map<String, dynamic>> getBody() async {
     // 获取body
     String maps = await utf8.decodeStream(request);
-    var value = jsonDecode(maps)[key];
-    if (value != null && value is T) {
+    var value = jsonDecode(maps);
+    if (value != null) {
       return value;
+    } else {
+      return {};
     }
-    // 错误处理
-    if (value == null) {
-      paramTypeNotAccess(key);
-      return null;
-    }
-
-    if (value is! T) {
-      paramTypeNotAccess(key);
-      return null;
-    }
-    return null;
   }
 
   Map<String, String> getQuery() {
