@@ -22,8 +22,8 @@ class DartServerHelper {
       case 'DELETE':
         delete();
         break;
-      case 'PACTH':
-        pacth();
+      case 'PATCH':
+        patch();
         break;
       default:
         error(500, message: 'server error');
@@ -43,7 +43,7 @@ class DartServerHelper {
     methodNotAllowed();
   }
 
-  pacth() {
+  patch() {
     methodNotAllowed();
   }
 
