@@ -1,34 +1,33 @@
 import 'dart:io';
-import 'dart:convert';
+import 'package:shelf/shelf.dart';
 
 class DartServerHelper {
-  HttpRequest request;
-  Map<String, dynamic> params = {};
-  DartServerHelper(this.request, {params}) {
-    params = params ?? {};
-    response();
-  }
-  response() {
+  Request request;
+  Response message = Response(404);
+  DartServerHelper(this.request);
+
+  Future<Response> response() async {
     switch (request.method) {
       case 'GET':
-        get();
+        await get();
         break;
       case 'POST':
-        post();
+        await post();
         break;
       case 'PUT':
-        put();
+        await put();
         break;
       case 'DELETE':
-        delete();
+        await delete();
         break;
       case 'PATCH':
-        patch();
+        await patch();
         break;
       default:
-        error(500, message: 'server error');
+        Future(() => error(500, message: 'server error'));
         break;
     }
+    return message;
   }
 
   get() {
@@ -52,39 +51,24 @@ class DartServerHelper {
   }
 
   void methodNotAllowed() {
-    request.response
-      ..statusCode = HttpStatus.methodNotAllowed
-      ..write('Unsupported request: ${request.method}.')
-      ..close();
+    message = Response(405, body: 'Unsupported request: ${request.method}.');
   }
 
   paramNotFound(String key) {
-    request.response
-      ..statusCode = HttpStatus.notAcceptable
-      ..write('Unsupported request param: $key.')
-      ..close();
+    message = Response(406, body: 'Unsupported request param: $key.');
   }
 
   paramTypeNotAccess(String key) {
-    request.response
-      ..statusCode = HttpStatus.notAcceptable
-      ..write('request param Type error: $key.')
-      ..close();
+    message = Response(406, body: 'request param Type error: $key.');
   }
 
-  void error(int code, {message}) {
-    request.response
-      ..statusCode = code
-      ..write(
-          jsonEncode({'code': code, 'message': message ?? '', 'data': null}))
-      ..close();
+  error(int code, {message}) {
+    message = Response(code, body: message ?? '');
   }
 
-  void helper(data) {
+  helper(data) {
     // 返回数据
-    request.response
-      ..write(jsonEncode({'code': 200, 'message': 'success', 'data': data}))
-      ..close();
+    message = Response(200, body: data);
   }
 
   String getHeadersBykey(String name) {
@@ -97,40 +81,24 @@ class DartServerHelper {
     return target;
   }
 
-  Future<Map<String, dynamic>> getBody() async {
+  Map<String, dynamic> getBody() {
     // 获取body
-    String maps = await utf8.decodeStream(request);
-    var value = jsonDecode(maps);
-    if (value != null) {
-      return value;
-    } else {
-      return {};
-    }
+    return request.context;
   }
 
   Map<String, String> getQuery() {
     // 获取 Query
-    return request.uri.queryParameters;
+    return request.url.queryParameters;
   }
 
   dynamic getQueryByKey(String key) {
     // 获取 params
-    return request.uri.queryParameters[key];
-  }
-
-  Map<String, dynamic> getParams() {
-    // 获取 params
-    return params;
-  }
-
-  dynamic getParamByKey(String key) {
-    // 获取 params
-    return params['key'];
+    return request.url.queryParameters[key];
   }
 
   File getFile() {
     // 获取文件
-    var fileName = request.uri.pathSegments.last;
+    var fileName = request.url.pathSegments.last;
     return File(fileName);
   }
 }
