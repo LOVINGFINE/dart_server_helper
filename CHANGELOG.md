@@ -13,3 +13,7 @@
 ## 0.0.4
 
 * TODO1: dio helper add.
+
+## 0.0.5
+
+* TODO1: remove params path module.
