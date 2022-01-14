@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
-import 'path_params.dart';
 
 class DartServerHelper {
-  PATHParams pathParam;
   HttpRequest request;
-  DartServerHelper(this.request, this.pathParam) {
+  Map<String, dynamic> params = {};
+  DartServerHelper(this.request, {params}) {
+    params = params ?? {};
     response();
   }
   response() {
@@ -120,12 +120,12 @@ class DartServerHelper {
 
   Map<String, dynamic> getParams() {
     // 获取 params
-    return pathParam.getValues(request.uri.path);
+    return params;
   }
 
   dynamic getParamByKey(String key) {
     // 获取 params
-    return pathParam.getValues(request.uri.path)[key];
+    return params['key'];
   }
 
   File getFile() {

@@ -1,6 +1,6 @@
 name: dart_server_helper
 description: A new dart package project,supported http server helper,This is a request help package about http server check, supporting path params parsing.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/LOVINGFINE/dart_server_helper
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^4.0.3
+  source_gen: ^1.1.1
 
 dev_dependencies:
   flutter_test:

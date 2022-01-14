@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 class DioManager {
   BaseOptions baseOptions;
-
   DioManager(this.baseOptions);
 
   Future find<T>(path, {options}) async {
